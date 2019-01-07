@@ -8,4 +8,6 @@
 
 ### Wykres wartości Halstead Effort:
 
-![Wykres wartości Halstead Effort](wykres1.png)
+<p align="center">
+  <img src="wykres1.png"/>
+</p>
