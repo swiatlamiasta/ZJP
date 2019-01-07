@@ -15,3 +15,4 @@ Kolejne kroki refaktoryzacji:
 - w update_part1 robimy invert if condition (3060) nic to nie zmienia ofc, ale
 pozwala nam na kolejny krok
 - extract method brie_or_ticket_update (2840)
+- extract method increment_quality (1760) - kawalek kodu powtarzajacy sie w 4 miejscach
