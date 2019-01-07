@@ -85,7 +85,7 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(0, items[0].quality)
         self.assertEqual(-1, items[0].sell_in)
 
-'''
+
     def test_conjured_item(self):
         items = []
         items.append(Item("Conjured Mana Cake", 5, 20))
@@ -101,7 +101,7 @@ class GildedRoseTest(unittest.TestCase):
             item = items[index]
             self.assertEqual(item.quality, expectation['quality'])
             self.assertEqual(item.sell_in, expectation['sell_in'])
-'''
+
 
 if __name__ == '__main__':
     unittest.main()
