@@ -10,9 +10,15 @@ Kolejne kroki refaktoryzacji:
 - extract method update_part1 (3423) (pierwszy nadrzedny if)
 - extract method update_part2 (3142) (drugi nadrzedny if)
 - extract method update_expired (3060) (wewnetrzna czesc trzeciego if'a)
-
+---
 
 - w update_part1 robimy invert if condition (3060) nic to nie zmienia ofc, ale
 pozwala nam na kolejny krok
 - extract method brie_or_ticket_update (2840)
+---
+
 - extract method increment_quality (1760) - kawalek kodu powtarzajacy sie w 4 miejscach
+- wstawiamy metode brie_or_ticket_update z powrotem do metody update_part1 (do pierwszego ifa), zauwazamy ze mozna usunac czesc kodu (1458)
+- jak wyzej tylko ze do drugiego ifa, pozbywamy sie metody brie_or_ticket i zbednego kodu (1388)
+---
+

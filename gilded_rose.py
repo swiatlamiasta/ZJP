@@ -35,21 +35,18 @@ class GildedRose(object):
             item.sell_in = item.sell_in - 1
 
     def update_part1(self, item):
-        if item.name == "Aged Brie" or item.name == "Backstage passes to a TAFKAL80ETC concert":
-            self.brie_or_ticket_update(item)
-        else:
-            if item.name == "Sulfuras, Hand of Ragnaros":
-                return
-            if item.quality > 0:
-                item.quality = item.quality - 1
-
-    def brie_or_ticket_update(self, item):
-        self.increment_quality(item)
-        if item.name == "Backstage passes to a TAFKAL80ETC concert":
+        if item.name == "Aged Brie":
+            self.increment_quality(item)
+        elif item.name == "Backstage passes to a TAFKAL80ETC concert":
+            self.increment_quality(item)
             if item.sell_in < 11:
                 self.increment_quality(item)
             if item.sell_in < 6:
                 self.increment_quality(item)
+        elif item.name == "Sulfuras, Hand of Ragnaros":
+            pass
+        elif item.quality > 0:
+            item.quality = item.quality - 1
 
     def increment_quality(self, item):
         if item.quality < 50:
