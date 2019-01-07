@@ -27,3 +27,4 @@ update_part1 zaczyna wygladac dobrze, kolejne ify zalezne od nazw
 
 - w update_expired robimy inverted ify i scalamy zagniezdzone ify w jeden wiekszy praktycznie tak jak poprzednio (1246)
 - extract method decrement_quality (wystepowala w 2 miejscach) (1075)
+- laczymy z powrotem uproszczone metody w jednego switch-like ifa (1031)

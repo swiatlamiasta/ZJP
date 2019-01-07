@@ -11,45 +11,38 @@ class GildedRose(object):
             self.update_one_item(item)
 
     def update_one_item(self, item):
-        self.update_part1(item)
-        self.update_part2(item)
-        if self.has_expired(item):
-            self.update_expired(item)
-
-    def has_expired(self, item):
-        return item.sell_in < 0
-
-    def update_expired(self, item):
         if item.name == "Aged Brie":
             self.increment_quality(item)
+            item.sell_in = item.sell_in - 1
+            if self.has_expired(item):
+                self.increment_quality(item)
+                item.sell_in = item.sell_in - 1
         elif item.name == "Backstage passes to a TAFKAL80ETC concert":
-            item.quality = 0
+            self.increment_quality(item)
+            item.sell_in = item.sell_in - 1
+            if item.sell_in < 11:
+                self.increment_quality(item)
+            if item.sell_in < 6:
+                self.increment_quality(item)
+            if self.has_expired(item):
+                item.quality = 0
         elif item.name == "Sulfuras, Hand of Ragnaros":
             pass
         else:
             self.decrement_quality(item)
+            item.sell_in = item.sell_in - 1
+            if self.has_expired(item):
+                self.decrement_quality(item)
+
+
+    def has_expired(self, item):
+        return item.sell_in < 0
+
 
     def decrement_quality(self, item):
         if item.quality > 0:
             item.quality = item.quality - 1
 
-    def update_part2(self, item):
-        if item.name != "Sulfuras, Hand of Ragnaros":
-            item.sell_in = item.sell_in - 1
-
-    def update_part1(self, item):
-        if item.name == "Aged Brie":
-            self.increment_quality(item)
-        elif item.name == "Backstage passes to a TAFKAL80ETC concert":
-            self.increment_quality(item)
-            if item.sell_in < 11:
-                self.increment_quality(item)
-            if item.sell_in < 6:
-                self.increment_quality(item)
-        elif item.name == "Sulfuras, Hand of Ragnaros":
-            pass
-        else:
-            self.decrement_quality(item)
 
     def increment_quality(self, item):
         if item.quality < 50:
