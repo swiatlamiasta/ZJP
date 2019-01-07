@@ -20,5 +20,10 @@ pozwala nam na kolejny krok
 - extract method increment_quality (1760) - kawalek kodu powtarzajacy sie w 4 miejscach
 - wstawiamy metode brie_or_ticket_update z powrotem do metody update_part1 (do pierwszego ifa), zauwazamy ze mozna usunac czesc kodu (1458)
 - jak wyzej tylko ze do drugiego ifa, pozbywamy sie metody brie_or_ticket i zbednego kodu (1388)
+
+update_part1 zaczyna wygladac dobrze, kolejne ify zalezne od nazw
+
 ---
 
+- w update_expired robimy inverted ify i scalamy zagniezdzone ify w jeden wiekszy praktycznie tak jak poprzednio (1246)
+- extract method decrement_quality (wystepowala w 2 miejscach) (1075)
