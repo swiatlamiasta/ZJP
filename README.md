@@ -30,11 +30,157 @@ Na poniższym wykresie znajdują się wartości metryki wysiłku dla złożonoś
 
 ### Proces refaktoryzacji kodu:
 
+Krok __#1__:
 
+W tym kroku postanowiliśmy przenieść całe ciało pierwszej pętli metody *update_quality(self)* do osobnej metody *update_one_item(self, item)*. Dzięki temu wynik naszej złożoności zmalał z 4205 do 3423.
+
+````diff
+  def update_quality(self):
+    for item in self.items:
+-     if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
+-       if item.quality > 0:
+-         if item.name != "Sulfuras, Hand of Ragnaros":
+-           item.quality = item.quality - 1
++     self.update_one_item(item)
++
++  def update_one_item(self, item):
++    if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
++      if item.quality > 0:
++        if item.name != "Sulfuras, Hand of Ragnaros":
++          item.quality = item.quality - 1
++    else:
++      if item.quality < 50:
++        item.quality = item.quality + 1
++        if item.name == "Backstage passes to a TAFKAL80ETC concert":
++          if item.sell_in < 11:
++            if item.quality < 50:
++              item.quality = item.quality + 1
++          if item.sell_in < 6:
++            if item.quality < 50:
++              item.quality = item.quality + 1
++      if item.name != "Sulfuras, Hand of Ragnaros":
++        item.sell_in = item.sell_in - 1
++      if item.sell_in < 0:
++        if item.name != "Aged Brie":
++          if item.name != "Backstage passes to a TAFKAL80ETC concert":
++            if item.quality > 0:
++              if item.name != "Sulfuras, Hand of Ragnaros":
++                item.quality = item.quality - 1
++              else:
++                item.quality = item.quality - item.quality
+          else:
+            if item.quality < 50:
+              item.quality = item.quality + 1
+-               if item.name == "Backstage passes to a TAFKAL80ETC concert":
+-                 if item.sell_in < 11:
+-                   if item.quality < 50:
+-                     item.quality = item.quality + 1
+-                   if item.sell_in < 6:
+-                     if item.quality < 50:
+-                       item.quality = item.quality + 1
+-          if item.name != "Sulfuras, Hand of Ragnaros":
+-            item.sell_in = item.sell_in - 1
+-          if item.sell_in < 0:
+-            if item.name != "Aged Brie":
+-              if item.name != "Backstage passes to a TAFKAL80ETC concert":
+-                if item.quality > 0:
+-                  if item.name != "Sulfuras, Hand of Ragnaros":
+-                    item.quality = item.quality - 1
+-                  else:
+-                    item.quality = item.quality - item.quality
+-              else:
+-                if item.quality < 50:
+-                  item.quality = item.quality + 1
+````
+
+Krok __#2__:
+
+W tym kroku postanowiliśmy wyodrębnić do osobnej metody zawartość pierwszego *if'a* z metody *update_one_item(self, item)*. Można powiedzieć, że dzięki tej zmianie zmierzamy powoli w stronę pojedynczej odpowiedzialności metody. Dzięki temu zabiegowi uzyskaliśmy ponownie mniejszy wynik, wynoszący tym razem 3142.
+
+````diff
+  def update_one_item(self, item):
++   self.update_part1(item)
++   if item.name != "Sulfuras, Hand of Ragnaros":
++     item.sell_in = item.sell_in - 1
++   if item.sell_in < 0:
++     if item.name != "Aged Brie":
++       if item.name != "Backstage passes to a TAFKAL80ETC concert":
++         if item.quality > 0:
++           if item.name != "Sulfuras, Hand of Ragnaros":
++             item.quality = item.quality - 1
++            else:
++              item.quality = item.quality - item.quality
++          else:
++            if item.quality < 50:
++              item.quality = item.quality + 1
++
++   def update_part1(self, item):
+    if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
+      if item.quality > 0:
+        if item.name != "Sulfuras, Hand of Ragnaros":
+          if item.sell_in < 6:
+            if item.quality < 50:
+              item.quality = item.quality + 1
+-       if item.name != "Sulfuras, Hand of Ragnaros":
+-         item.sell_in = item.sell_in - 1
+-       if item.sell_in < 0:
+-         if item.name != "Aged Brie":
+-           if item.name != "Backstage passes to a TAFKAL80ETC concert":
+-             if item.quality > 0:
+-               if item.name != "Sulfuras, Hand of Ragnaros":
+-                 item.quality = item.quality - 1
+-               else:
+-                 item.quality = item.quality - item.quality
+-             else:
+-               if item.quality < 50:
+-                 item.quality = item.quality + 1
+````
+
+Krok __#3__:
+
+W kolejnym kroku postanowiliśmy wydzielić drugiego głównego *if'a* z metody aktualizującej wartość przedmiotów oraz trzeciego z głównych *if'ów* również przenieść do dwóch nowych metod. Dzięki temu nasza metoda *update_one_item(self, item)* stała się znacznie czytelniejsza.
+
+````diff
+  def update_one_item(self, item):
+    self.update_part1(item)
++   self.update_part2(item)
++   if self.has_expired(item):
++     self.update_expired(item)
++
++   def has_expired(self, item):
++     return item.sell_in < 0
++
++   def update_expired(self, item):
++     if item.name != "Aged Brie":
++       if item.name != "Backstage passes to a TAFKAL80ETC concert":
++         if item.quality > 0:
++           if item.name != "Sulfuras, Hand of Ragnaros":
++             item.quality = item.quality - 1
++       else:
++         item.quality = item.quality - item.quality
++      else:
++        if item.quality < 50:
++          item.quality = item.quality + 1
++
++   def update_part2(self, item):
+      if item.name != "Sulfuras, Hand of Ragnaros":
+        item.sell_in = item.sell_in - 1
+-       if item.sell_in < 0:
+-         if item.name != "Aged Brie":
+-           if item.name != "Backstage passes to a TAFKAL80ETC concert":
+-             if item.quality > 0:
+-               if item.name != "Sulfuras, Hand of Ragnaros":
+-                 item.quality = item.quality - 1
+-           else:
+-             item.quality = item.quality - item.quality
+-         else:
+-           if item.quality < 50:
+-             item.quality = item.quality + 1
+````
 
 ---
 
-#### Oryginalny kod metody update_quality():
+#### Oryginalny kod metody update_quality(self):
 
 ````diff
 - def update_quality(self):
