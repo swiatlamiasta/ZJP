@@ -180,55 +180,75 @@ W kolejnym kroku postanowiliśmy wydzielić drugiego głównego *if'a* z metody 
 
 ---
 
-#### Oryginalny kod metody update_quality(self):
-
-````diff
-- def update_quality(self):
--   for item in self.items:
--     if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
--       if item.quality > 0:
--         if item.name != "Sulfuras, Hand of Ragnaros":
--           item.quality = item.quality - 1
--     else :
--       if item.quality < 50:
--         item.quality = item.quality + 1
--         if item.name == "Backstage passes to a TAFKAL80ETC concert":
--           if item.sell_in < 11:
--             if item.quality < 50:
--               item.quality = item.quality + 1
--           if item.sell_in < 6:
--             if item.quality < 50:
--               item.quality = item.quality + 1
--     if item.name != "Sulfuras, Hand of Ragnaros":
--       item.sell_in = item.sell_in - 1
--     if item.sell_in < 0:
--       if item.name != "Aged Brie":
--         if item.name != "Backstage passes to a TAFKAL80ETC concert":
--           if item.quality > 0:
--             if item.name != "Sulfuras, Hand of Ragnaros":
--               item.quality = item.quality - 1
--         else :
--           item.quality = item.quality - item.quality
--       else :
--         if item.quality < 50:
--           item.quality = item.quality + 1
-````
-
 #### I efekt końcowy:
 
+Poniżej znajduje się kod wynikowy stanowiący rezultat dokonanych poprawek oraz refaktoryzacji. Uzyskaliśmy kod czytelny i przejrzysty, posiadający cechy "dobrego, czystego kodu". Z jednej klasy wyodrębniliśmy ich kilka, z jednej metody powstało wiele metod, umieszczonych w odrębnych klasach... __Raj perfekcjonisty :)__
+
+Wynik końcowy przyjętej przez nas metryki wynosi 1031. A zatem jest to dość dobry wynik, biorąc pod uwagę to, że na początku otrzymaliśmy w rezultacie wartość 4205. Brawo my!
+
 ````diff
-+ def update_quality(self):
-+   for item in self.items:
-+     self.update_one_item(item)
++ class GildedRose(object):
 + 
-+ def update_one_item(self, item):
-+   if item.name == "Aged Brie":
++   def __init__(self, items):
++     self.items = items
++ 
++   def update_quality(self):
++     for item in self.items:
++       self.update_one_item(item)
++ 
++   def update_one_item(self, item):
++     if item.name == "Aged Brie":
++       item.__class__ = Brie
++     elif item.name == "Sulfuras, Hand of Ragnaros":
++       item.__class__ = Sulfuras
++     elif item.name == "Backstage passes to a TAFKAL80ETC concert":
++      item.__class__ = BackstagePass
++     elif item.name == "Conjured Mana Cake":
++       item.__class__ = Conjured
++     item.update(item)
++ 
++ 
++ class Item:
++ 
++   def __init__(self, name, sell_in, quality):
++     self.name = name
++     self.sell_in = sell_in
++     self.quality = quality
++ 
++   def __repr__(self):
++     return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
++ 
++   def has_expired(self, item):
++     return item.sell_in < 0
++ 
++   def decrement_quality(self, item):
++     if item.quality > 0:
++       item.quality = item.quality - 1
++ 
++   def increment_quality(self, item):
++     if item.quality < 50:
++       item.quality = item.quality + 1
++ 
++   def update(self, item):
++     self.decrement_quality(item)
++     item.sell_in = item.sell_in - 1
++     if self.has_expired(item):
++       self.decrement_quality(item)
++ 
++ 
++ class Brie(Item):
++ 
++   def update(self, item):
 +     self.increment_quality(item)
 +     item.sell_in = item.sell_in - 1
 +     if self.has_expired(item):
 +       self.increment_quality(item)
 +       item.sell_in = item.sell_in - 1
-+   elif item.name == "Backstage passes to a TAFKAL80ETC concert":
++ 
++ 
++ class BackstagePass(Item):
++ 
++   def update(self, item):
 +     self.increment_quality(item)
 +     item.sell_in = item.sell_in - 1
 +     if item.sell_in < 11:
@@ -237,22 +257,15 @@ W kolejnym kroku postanowiliśmy wydzielić drugiego głównego *if'a* z metody 
 +       self.increment_quality(item)
 +     if self.has_expired(item):
 +       item.quality = 0
-+   elif item.name == "Sulfuras, Hand of Ragnaros":
++ 
++ class Sulfuras(Item):
++ 
++   def update(self, item):
 +     pass
-+   else:
-+     self.decrement_quality(item)
-+     item.sell_in = item.sell_in - 1
-+     if self.has_expired(item):
-+       self.decrement_quality(item)
 + 
-+ def has_expired(self, item):
-+   return item.sell_in < 0
 + 
-+ def decrement_quality(self, item):
-+   if item.quality > 0:
-+     item.quality = item.quality - 1
-+ 
-+ def increment_quality(self, item):
-+   if item.quality < 50:
-+     item.quality = item.quality + 1
++ class Conjured(Item):
++   def decrement_quality(self, item):
++     if item.quality > 0:
++       item.quality = item.quality - 2
 ````
