@@ -178,7 +178,7 @@ W kolejnym kroku postanowiliśmy wydzielić drugiego głównego *if'a* z metody 
 -             item.quality = item.quality + 1
 ````
 
-Przyklad refaktoryzacji jeden z metod krok po kroku:
+Przykład refaktoryzacji jednej z metod krok po kroku:
 
 ![](https://github.com/swiatlamiasta/ZJP/blob/master/pics/p5/1.png)
 ![](https://github.com/swiatlamiasta/ZJP/blob/master/pics/p5/2.png)
