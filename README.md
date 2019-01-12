@@ -178,6 +178,17 @@ W kolejnym kroku postanowiliśmy wydzielić drugiego głównego *if'a* z metody 
 -             item.quality = item.quality + 1
 ````
 
+Przyklad refaktoryzacji jeden z metod krok po kroku:
+
+![](https://github.com/swiatlamiasta/ZJP/blob/master/pics/p5/1.png)
+![](https://github.com/swiatlamiasta/ZJP/blob/master/pics/p5/2.png)
+![](https://github.com/swiatlamiasta/ZJP/blob/master/pics/p5/3.png)
+![](https://github.com/swiatlamiasta/ZJP/blob/master/pics/p5/4.png)
+![](https://github.com/swiatlamiasta/ZJP/blob/master/pics/p5/5.png)
+![](https://github.com/swiatlamiasta/ZJP/blob/master/pics/p5/6.png)
+![](https://github.com/swiatlamiasta/ZJP/blob/master/pics/p5/7.png)
+
+
 ---
 
 #### I efekt końcowy:
